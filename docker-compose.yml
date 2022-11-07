@@ -10,3 +10,15 @@ services:
       - 5000:5000
     env_file:
       - ./.env.dev
+
+  db:
+    image: postgres:13-alpine
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin123
+      - POSTGRES_DB=homepage
+
+volumes:
+  postgres_data:
