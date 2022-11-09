@@ -56,5 +56,14 @@ def register():
             
     return jsonify(response={"success": "The email is already registered, please log in or other email"})
 
+
+@app.route('/logout')
+def logout():
+    user = current_user
+    user.is_authenticated = False
+    user.is_active = False
+    logout_user()
+    return jsonify(Response={"success": "user has successfully logged out"}) 
+
 if __name__ == "__main__":
     app.run(host='127.0.0.1', port=5000, debug=True)
