@@ -1,4 +1,4 @@
-from flask import jsonify, request, abort, Response
+from flask import jsonify, request
 from flask_login import LoginManager, login_user, current_user, logout_user
 from app.model import app, User, db
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -32,6 +32,24 @@ def hello_world():
     return jsonify(hello="Api LISP")
 
 
+# HTTP POST - LOGIN USER 
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == 'POST':
+        user = User.query.filter_by(email=request.form.get("email")).first()
+        if user != None:
+            if check_password_hash(user.password, request.form.get("password")):
+                user.is_authenticated = True
+                login_user(user)
+
+                return jsonify(response={"success": "user has successfully login"})
+            else:
+               return jsonify(response={"error": "Password incorrect, please try again."}), 404
+        else:
+            return jsonify(response={"error": "That email does not exist, please try again."}), 404
+
+ 
+# HTTP POST - CREATE USER 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == 'POST':    
@@ -57,13 +75,14 @@ def register():
     return jsonify(response={"success": "The email is already registered, please log in or other email"})
 
 
+# HTTP GET - LOGOUT CURRENT USER
 @app.route('/logout')
 def logout():
     user = current_user
     user.is_authenticated = False
     user.is_active = False
     logout_user()
-    return jsonify(Response={"success": "user has successfully logged out"}) 
+    return jsonify(Response={"success": "user has successfully logged out."})
 
-if __name__ == "__main__":
-    app.run(host='127.0.0.1', port=5000, debug=True)
+#if __name__ == "__main__":
+#    app.run(host='127.0.0.1', port=5000, debug=True)
