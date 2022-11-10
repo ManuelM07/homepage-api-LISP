@@ -26,7 +26,7 @@ class User(UserMixin, db.Model):
     birthday = db.Column(db.Date())
     weight = db.Column(db.Float)
     height = db.Column(db.Integer)
-    active = db.Column(db.Boolean)
+    active = db.Column(db.Boolean, nullable=False)
     role = db.Column(db.Enum(Role), nullable=False)
     user_zone = relationship("UserZone")
 

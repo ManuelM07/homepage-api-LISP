@@ -39,10 +39,13 @@ def login():
         user = User.query.filter_by(email=request.form.get("email")).first()
         if user != None:
             if check_password_hash(user.password, request.form.get("password")):
-                user.is_authenticated = True
-                login_user(user)
+                if user.active:
+                    user.is_authenticated = True
+                    login_user(user)
 
-                return jsonify(response={"success": "user has successfully login"})
+                    return jsonify(response={"success": "The user has successfully login."})
+                else:
+                    return jsonify(response={"error": "The user doesn't have access."}), 404
             else:
                return jsonify(response={"error": "Password incorrect, please try again."}), 404
         else:
@@ -62,6 +65,7 @@ def register():
                 email=request.form.get("email"), 
                 password=password,
                 dni=request.form.get("dni"),
+                active=True,
                 role="client",
                 )
             db.session.add(user)
@@ -70,9 +74,9 @@ def register():
             user.is_authenticated = True
             login_user(user)
 
-            return jsonify(response={"success": "user has successfully register"}), 200 # specified http status
+            return jsonify(response={"success": "User has successfully register."}), 200 # specified http status
             
-    return jsonify(response={"success": "The email is already registered, please log in or other email"})
+    return jsonify(response={"success": "The email is already registered, please log in or other email."})
 
 
 # HTTP GET - LOGOUT CURRENT USER
