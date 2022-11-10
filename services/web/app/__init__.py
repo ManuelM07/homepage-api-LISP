@@ -88,5 +88,18 @@ def logout():
     logout_user()
     return jsonify(Response={"success": "user has successfully logged out."})
 
+
+# HTTP POST - activate or inactivate user
+@app.route("/status-user/<user_id>", methods=["GET", "PATCH"])
+def status_user(user_id):
+    user = User.query.get(user_id)
+    if user != None:
+        user.active = not user.active
+        db.session.commit()
+        return jsonify(response={"success": "Successfully updated user status."})
+    else:
+        return jsonify(error={"Not Found": "Sorry, a user with that id was not found in the database."})
+    
+
 #if __name__ == "__main__":
 #    app.run(host='127.0.0.1', port=5000, debug=True)
