@@ -117,7 +117,7 @@ def all_zones():
     return jsonify(zones=all_zones)
 
 
-# HTTP PATCH - activate or inactivate user
+# HTTP PATCH - update user
 @app.route("/update-user/<user_id>", methods=["GET", "PATCH"])
 def update_user(user_id):
     user = User.query.get(user_id)
