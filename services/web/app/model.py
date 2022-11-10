@@ -42,6 +42,9 @@ class User(UserMixin, db.Model):
     def get_id(self):
         return super().get_id()
 
+    def to_dict(self):
+        return {column.name: (getattr(self, column.name) if column.name != "role" else getattr(self, column.name).name) for column in self.__table__.columns}
+
 
 class Zone(db.Model):
     __tablename__ = 'zone'
@@ -50,6 +53,9 @@ class Zone(db.Model):
     name = db.Column(db.String(250), nullable=False)
     description = db.Column(db.Text, nullable=False)
     user_zone = relationship("UserZone")
+
+    def to_dict(self):
+        return {column.name: getattr(self, column.name) for column in self.__table__.columns}
 
 
 class UserZone(db.Model):

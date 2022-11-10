@@ -1,6 +1,6 @@
 from flask import jsonify, request
 from flask_login import LoginManager, login_user, current_user, logout_user
-from app.model import app, User, db
+from app.model import app, User, db, Zone
 from werkzeug.security import check_password_hash, generate_password_hash
 from urllib.parse import urlparse, urljoin
 from dotenv import load_dotenv
@@ -99,6 +99,13 @@ def status_user(user_id):
         return jsonify(response={"success": "Successfully updated user status."})
     else:
         return jsonify(error={"Not Found": "Sorry, a user with that id was not found in the database."})
+
+# HTTP GET - get all users
+@app.route("/all-users")
+def all_users():
+    users = User()
+    all_users = [user_x.to_dict() for user_x in users.query.all()]
+    return jsonify(users=all_users)
     
 
 #if __name__ == "__main__":
