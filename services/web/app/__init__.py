@@ -100,13 +100,18 @@ def status_user(user_id):
     else:
         return jsonify(error={"Not Found": "Sorry, a user with that id was not found in the database."})
 
+
 # HTTP GET - get all users
 @app.route("/all-users")
 def all_users():
     users = User()
     all_users = [user_x.to_dict() for user_x in users.query.all()]
     return jsonify(users=all_users)
-    
 
-#if __name__ == "__main__":
-#    app.run(host='127.0.0.1', port=5000, debug=True)
+
+# HTTP GET - get all zones
+@app.route("/all-zones")
+def all_zones():
+    zones = Zone()
+    all_zones = [zone.to_dict() for zone in zones.query.all()]
+    return jsonify(zones=all_zones)
