@@ -89,7 +89,7 @@ def logout():
     return jsonify(Response={"success": "user has successfully logged out."})
 
 
-# HTTP POST - activate or inactivate user
+# HTTP PATCH - activate or inactivate user
 @app.route("/status-user/<user_id>", methods=["GET", "PATCH"])
 def status_user(user_id):
     user = User.query.get(user_id)
@@ -115,3 +115,34 @@ def all_zones():
     zones = Zone()
     all_zones = [zone.to_dict() for zone in zones.query.all()]
     return jsonify(zones=all_zones)
+
+
+# HTTP PATCH - activate or inactivate user
+@app.route("/update-user/<user_id>", methods=["GET", "PATCH"])
+def update_user(user_id):
+    user = User.query.get(user_id)
+    if user != None:
+        email = request.form.get("email")
+        if email: user.email = email
+
+        name = request.form.get("name")
+        if name: user.name = name
+
+        years = request.form.get("years")
+        if years: user.years = years
+
+        birthday = request.form.get("birthday")
+        if birthday: user.birthday = birthday
+
+        weight = request.form.get("weight")
+        if weight: user.weight = weight
+
+        height = request.form.get("height")
+        if height: user.height = height
+
+        db.session.commit()
+
+        return jsonify(response={"success": "Successfully updated user data."})
+    else:
+        return jsonify(error={"Not Found": "Sorry, a user with that id was not found in the database."})
+
