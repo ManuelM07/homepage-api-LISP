@@ -85,6 +85,7 @@ def logout():
     user = current_user
     user.is_authenticated = False
     user.is_active = False
+    print(user.is_active)
     logout_user()
     return jsonify(Response={"success": "user has successfully logged out."})
 
@@ -146,3 +147,10 @@ def update_user(user_id):
     else:
         return jsonify(error={"Not Found": "Sorry, a user with that id was not found in the database."})
 
+
+# HTTP GET - get current user
+@app.route("/current-user", methods=["GET", "PATCH"])
+def is_current_user():
+    user_id = current_user.get_id()
+    user = User.query.get(user_id)
+    return jsonify(response={"name": str(user.name)})
