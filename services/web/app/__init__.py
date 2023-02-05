@@ -36,35 +36,35 @@ def hello_world():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == 'POST':
-        user = User.query.filter_by(email=request.form.get("email")).first()
+        user = User.query.filter_by(email=request.json.get("email")).first()
         if user != None:
-            if check_password_hash(user.password, request.form.get("password")):
+            if check_password_hash(user.password, request.json.get("password")):
                 if user.active:
                     user.is_authenticated = True
                     login_user(user)
 
                     return jsonify(response={"success": "The user has successfully login."})
                 else:
-                    return jsonify(response={"error": "The user doesn't have access."}), 404
+                    return jsonify(response={"error": "The user doesn't have access."})
             else:
-               return jsonify(response={"error": "Password incorrect, please try again."}), 404
+               return jsonify(response={"error": "Password incorrect, please try again."})
         else:
-            return jsonify(response={"error": "That email does not exist, please try again."}), 404
+            return jsonify(response={"error": f"That email does not exist, please try again."})
 
  
 # HTTP POST - CREATE USER 
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == 'POST':    
-        user = User.query.filter_by(email=request.form.get("email")).first()
+        user = User.query.filter_by(email=request.json.get("email")).first()
 
         if user == None:
-            password = generate_password_hash(request.form.get("password"), method='pbkdf2:sha256', salt_length=8)
+            password = generate_password_hash(request.json.get("password"), method='pbkdf2:sha256', salt_length=8)
             user = User(
-                name=request.form.get("name"), 
-                email=request.form.get("email"), 
+                name=request.json.get("name"), 
+                email=request.json.get("email"), 
                 password=password,
-                dni=request.form.get("dni"),
+                dni=request.json.get("dni"),
                 active=True,
                 role="client",
                 )
@@ -76,7 +76,7 @@ def register():
 
             return jsonify(response={"success": "User has successfully register."}), 200 # specified http status
             
-    return jsonify(response={"success": "The email is already registered, please log in or other email."})
+    return jsonify(response={"success": f"The email is already registered, please log in or other email."})
 
 
 # HTTP GET - LOGOUT CURRENT USER
@@ -85,7 +85,6 @@ def logout():
     user = current_user
     user.is_authenticated = False
     user.is_active = False
-    print(user.is_active)
     logout_user()
     return jsonify(Response={"success": "user has successfully logged out."})
 
@@ -123,22 +122,22 @@ def all_zones():
 def update_user(user_id):
     user = User.query.get(user_id)
     if user != None:
-        email = request.form.get("email")
+        email = request.json.get("email")
         if email: user.email = email
 
-        name = request.form.get("name")
+        name = request.json.get("name")
         if name: user.name = name
 
-        years = request.form.get("years")
+        years = request.json.get("years")
         if years: user.years = years
 
-        birthday = request.form.get("birthday")
+        birthday = request.json.get("birthday")
         if birthday: user.birthday = birthday
 
-        weight = request.form.get("weight")
+        weight = request.json.get("weight")
         if weight: user.weight = weight
 
-        height = request.form.get("height")
+        height = request.json.get("height")
         if height: user.height = height
 
         db.session.commit()
@@ -153,4 +152,16 @@ def update_user(user_id):
 def is_current_user():
     user_id = current_user.get_id()
     user = User.query.get(user_id)
-    return jsonify(response={"name": str(user.name)})
+    return jsonify(response={"id": user.id})
+
+
+# HTTP GET - get  user
+@app.route("/user/<user_id>", methods=["GET", "PATCH"])
+def get_user(user_id):
+    #user_id = current_user.get_id()
+    user = User.query.get(user_id)
+    return jsonify(response={"data": {
+        "name": user.name,
+        "years": user.years,
+        "birthday": user.birthday,
+    }}) 
