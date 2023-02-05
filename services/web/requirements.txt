@@ -10,3 +10,4 @@ psycopg2-binary==2.9.4
 python-dotenv==0.21.0
 SQLAlchemy==1.4.43
 Werkzeug==2.2.2
+Flask-Cors==3.0.10
