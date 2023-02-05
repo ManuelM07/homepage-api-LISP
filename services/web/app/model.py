@@ -3,9 +3,12 @@ from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from flask import Flask
 import enum
+from flask_cors import CORS
 
 app = Flask(__name__)
 db = SQLAlchemy(app)
+CORS(app, resources={r'*': {'origins': '*'}})
+
 
 class Role(enum.Enum):
     admin = "admin"
