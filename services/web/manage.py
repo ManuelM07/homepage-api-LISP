@@ -27,7 +27,7 @@ def seed_db():
 @cli.command("create_zones")
 def create_zones():
     db.session.add(Zone(
-        name="sports zone",
+        name="Complexes zone",
         description=
         """Morbi pharetra blandit mi, varius tempus turpis condimentum sed. 
         Vestibulum ante ipsum primis in faucibus orci luctus et ultrices 
@@ -36,7 +36,7 @@ def create_zones():
         Phasellus non risus ut quam tristique malesuada et sit amet dolor.""",
     ))   
     db.session.add(Zone(
-        name="sports complexes",
+        name="Medical service",
         description=
         """Morbi pharetra blandit mi, varius tempus turpis condimentum sed. 
         Vestibulum ante ipsum primis in faucibus orci luctus et ultrices 
